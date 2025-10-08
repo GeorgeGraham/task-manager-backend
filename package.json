@@ -4,7 +4,7 @@
   "description": "Task Manager API with Express",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
@@ -14,7 +14,9 @@
     "express": "^5.1.0"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "jest": "^30.2.0",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "ts-jest": "^29.4.4"
   }
 }
