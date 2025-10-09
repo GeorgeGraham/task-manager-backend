@@ -11,3 +11,13 @@ export async function registerUser(newUser : User, repo : MockUserRepository): P
   }
   return await repo.createUser(newUser);
 }
+
+export async function authenticateUser(username: string, password: string,  repo : MockUserRepository): Promise<boolean> {
+  //Check if user already exists in database
+  const existing = await repo.getUserByUsername(username);
+  if(!existing){
+    throw new Error("User does not exist");
+  }
+  return password == existing.password;
+  
+}
