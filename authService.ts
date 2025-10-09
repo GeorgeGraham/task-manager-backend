@@ -21,3 +21,7 @@ export async function authenticateUser(username: string, password: string,  repo
   return password == existing.password;
   
 }
+
+export async function logoutUser(): Promise<void> {
+  // No state to clear yet
+}
