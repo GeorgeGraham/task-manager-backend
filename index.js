@@ -1,5 +1,6 @@
 import express from "express";
 import { MockUserRepository } from "./mockUserRepository";
+import registerUser from "./authService";
 
 const app = express();
 app.use(express.json());
@@ -14,17 +15,12 @@ app.get("/", (req, res) => {
 
 app.post("/register", async (req, res) => {
   const { name, password } = req.body;
-
-  //Check if user already exists in mock database
-  const existing = await userRepo.getUserByName(name);
-  if(existing){
-    return res.status(400).json({ message: "User already exists"})
-  }
-
   const newUser = new User(name, password);
-  await userRepo.createUser(newUser);
-  res.status(201).json({ message: "User registered successfully" });
-  
+  registerUser(newUser, userRepo).then(() => {
+    res.status(201).json({ message: "User registered successfully" });
+  }).catch((err) => {
+    res.status(400).json({ error: err.message });
+  });
 });
 
 
