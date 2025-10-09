@@ -1,0 +1,13 @@
+
+
+import { MockUserRepository } from "./mockUserRepository";
+import { User } from "./user";
+
+export async function registerUser(newUser : User, repo : MockUserRepository): Promise<User> {
+  //Check if user already exists in mock database
+  const existing = await repo.getUserByUsername(newUser.name);
+  if(existing){
+    throw new Error("User already exists");
+  }
+  return await repo.createUser(newUser);
+}
