@@ -1,15 +1,15 @@
 import express from "express";
 import { MockUserRepository } from "./mockUserRepository";
-import registerUser from "./authService";
+import { registerUser } from "./authService";
+import { User } from "./user";
 
 const app = express();
 app.use(express.json());
 
 const userRepo = new MockUserRepository();
 
-
 // Test route
-app.get("/", (req, res) => {
+app.get("/", (req , res) => {
   res.send("Task Manager API is running...");
 });
 
@@ -23,7 +23,5 @@ app.post("/register", async (req, res) => {
   });
 });
 
-
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
