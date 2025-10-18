@@ -1,6 +1,6 @@
 import express from "express";
 import { MockUserRepository } from "./mockUserRepository";
-import { registerUser } from "./authService";
+import { authenticateUser, registerUser } from "./authService";
 import { User } from "./user";
 
 const app = express();
@@ -22,5 +22,21 @@ app.post("/register", async (req, res) => {
     res.status(400).json({ error: err.message });
   });
 });
+
+app.post("/login", async (req, res)=>{
+  const {name, password} = req.body;
+  let result =  await authenticateUser(name,password,userRepo);
+  const crypto = require("crypto");
+  const sessionId = crypto.randomBytes(32).toString("base64url");
+  //Store Hash
+  const sessionHash = crypto.createHash('sha256').update(sessionId).digest('hex');
+  res.cookie('sessionId',sessionHash, {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'strict',
+    maxAge: 24*60*60*1000
+  })
+  res.status(200).send("User Logged In Successfully");
+})
 
 export default app;
