@@ -39,4 +39,14 @@ app.post("/login", async (req, res)=>{
   res.status(200).send("User Logged In Successfully");
 })
 
+app.post("/logout",(req,res)=>{
+  res.cookie('sessionId',"", {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'strict',
+    expires: new Date(0),
+  })
+  res.status(200).end();1
+})
+
 export default app;
