@@ -1,9 +1,9 @@
-import { MockUserRepository } from "./mockUserRepository";
+import { UserRepository } from "./userRepository";
 import { User } from "./user";
 import jwt , { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
-export async function registerUser(newUser : User, repo : MockUserRepository): Promise<User> {
+export async function registerUser(newUser : User, repo : UserRepository): Promise<User> {
   //Check if user already exists in mock database
   const existing = await repo.getUserByUsername(newUser.name);
   if(existing){
@@ -12,7 +12,7 @@ export async function registerUser(newUser : User, repo : MockUserRepository): P
   return await repo.createUser(newUser);
 }
 
-export async function authenticateUser(username: string, password: string,  repo : MockUserRepository): Promise<boolean> {
+export async function authenticateUser(username: string, password: string,  repo : UserRepository): Promise<boolean> {
   //Check if user already exists in database
   const existing = await repo.getUserByUsername(username);
   if(!existing){
