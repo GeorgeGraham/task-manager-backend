@@ -3,13 +3,13 @@ import { User } from "./user";
 import jwt , { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 
-export async function registerUser(newUser : User, repo : UserRepository): Promise<User> {
+export async function registerUser(username : string , password : string , repo : UserRepository): Promise<User> {
   //Check if user already exists in mock database
-  const existing = await repo.getUserByUsername(newUser.name);
+  const existing = await repo.getUserByUsername(username);
   if(existing){
     throw new Error("User already exists");
   }
-  return await repo.createUser(newUser);
+  return await repo.createUser(new User(username , password));
 }
 
 export async function authenticateUser(username: string, password: string,  repo : UserRepository): Promise<boolean> {
