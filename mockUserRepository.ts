@@ -1,7 +1,8 @@
 
 import { User } from "./user";
+import { UserRepository } from "./userRepository";
 
-export class MockUserRepository {
+export class MockUserRepository implements UserRepository {
     private users: any[] = [];
     
     getUserByUsername(username: string): Promise<User> {
