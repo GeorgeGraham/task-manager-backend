@@ -1,10 +1,7 @@
+import { registerUser , authenticateUser } from "../authService";
+import { MockUserRepository } from "../mockUserRepository";
+import { User } from "../user";
 
-
-
-import { registerUser } from "./authService";
-import { MockUserRepository } from "./mockUserRepository";
-import { User } from "./user";
-import { authenticateUser } from "./authService";
 
 describe("registerUser", () => {
   test("should register a new user", async () => {
