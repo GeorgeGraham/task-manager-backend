@@ -28,10 +28,8 @@ export async function logoutUser(): Promise<void> {
 
 //Generates JWT Token , with username in payload based on environment variable
 export function generateAccessToken(username : string){
-  console.log("Username");
-  console.log(username);
   if (!process.env.SECRET) throw new Error("SECRET not defined");
-  const token = jwt.sign(username, process.env.SECRET, {expiresIn: '1800s'});
+  const token = jwt.sign({"username" : username}, process.env.SECRET, {expiresIn: '1800s'});
   return token;
 }
 
