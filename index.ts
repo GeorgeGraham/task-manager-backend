@@ -1,10 +1,9 @@
 import express, { NextFunction, Request, Response } from "express";
 import { MockUserRepository } from "./mockUserRepository";
-import { authenticateUser, registerUser } from "./authService";
+import { authenticateUser, registerUser , generateAccessToken , authenticateToken } from "./authService";
 import { User } from "./user";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { authenticateToken } from "./authService";
 import { UserRepository } from "./userRepository";
 
 
@@ -27,9 +26,8 @@ function createApp(userRepo : UserRepository ){
 
 
   app.post("/register", async (req, res) => {
-    const { name, password } = req.body;
-    const newUser = new User(name, password);
-    registerUser(newUser, userRepo).then(() => {
+    const { username, password } = req.body;
+    registerUser(username , password, userRepo).then(() => {
       res.status(201).json({ message: "User registered successfully" });
     }).catch((err) => {
       res.status(400).json({ error: err.message });
@@ -38,14 +36,18 @@ function createApp(userRepo : UserRepository ){
 
   app.post("/login", async (req, res)=>{
     const {username, password} = req.body;
-    
     let authenticated =  await authenticateUser(username,password,userRepo);
     console.log(authenticated);
-    //console.log("Cooking");
-    //if(!authenticated){return res.status(401).send('Invalid credcentials')}
-    //const token = generateAccessToken(username);
-    //res.json(token);
-    res.status(200).send();
+    if(authenticated){
+      try{
+        let token = generateAccessToken(username)
+        console.log(token);
+        res.json({"token": token});
+      }catch(error){
+        console.log("some error",error);
+      }
+    }
+    res.status(401).send();
   })
 
   app.post("/logout",(req,res)=>{
