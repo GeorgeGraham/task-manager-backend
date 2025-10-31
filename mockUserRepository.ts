@@ -6,7 +6,7 @@ export class MockUserRepository implements UserRepository {
     private users: any[] = [];
     
     getUserByUsername(username: string): Promise<User> {
-        const user = this.users.find(u => u.name === username);
+        const user = this.users.find(u => u.username === username);
         return Promise.resolve(user);
     }
 
