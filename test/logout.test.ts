@@ -1,14 +1,11 @@
 
 import request from "supertest";
 import app from "../index";
-import createApp from "../index";
-import { MockUserRepository } from "../mockUserRepository";
-
+import { createTestApp } from "./testutils";
 describe("POST /logout", ()=>{
   it("logout , shouldn't be able to access hidden route", async () => {
     //Initial Setup
-    const userRepo  = new MockUserRepository(); 
-    const app = createApp(userRepo);
+    const app = createTestApp();
     
     await request(app)
       .post("/register")
@@ -22,8 +19,8 @@ describe("POST /logout", ()=>{
     const token = loginRes.body.token;
     expect(token).toBeDefined();
 
-    await request(app).post("/logout");
-
+    await request(app).post("/logout").set('Authorization', `Bearer ${token}`);
+    
     const protectedRes = await request(app)
                 .get("/")
                 // SET THE AUTHORIZATION HEADER

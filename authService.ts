@@ -2,6 +2,7 @@ import { UserRepository } from "./userRepository";
 import { User } from "./user";
 import jwt , { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
+import { TokenStore } from "./tokenStore";
 
 export async function registerUser(username : string , password : string , repo : UserRepository): Promise<User> {
   //Check if user already exists in mock database
@@ -35,22 +36,40 @@ export function generateAccessToken(username : string){
 
 //Interface for data to pass to our authenticateToken method extending normal express Request definition
 export interface AuthRequest extends Request {
-  user?: string | JwtPayload
+  user?: UserPayload
+}
+
+//Interface for JWT
+interface UserPayload extends JwtPayload {
+  username: string;
+}
+
+async function validRefreshToken(tokenRepo : TokenStore, username : string) : Promise<boolean|undefined>{
+  const valid = await tokenRepo.getTokenData(username);
+  return valid?.valid;
 }
 
 //Middleware to Authenticate JWT token and pass onto route once authenticated
-export function authenticateToken(req : AuthRequest, res : Response, next : NextFunction) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]
-  
-  if (token == null) return res.sendStatus(401)
-
-  jwt.verify(token, process.env.SECRET as string, (err: any, user: any) => {
-
-    if (err) return res.sendStatus(403)
-
-    req.user = user
-
-    next()
-  })
+export function authenticateToken(tokenRepo : TokenStore){
+  return async (req : AuthRequest, res : Response, next : NextFunction) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]
+    
+    if (token == null) return res.sendStatus(401)
+    console.log("Hello");
+    try{
+      const decoded = jwt.verify(token, process.env.SECRET as string) as UserPayload;
+      const validRefresh = await validRefreshToken(tokenRepo, decoded.username);
+      if(!validRefresh){
+        return res.status(403).send();
+      }
+      req.user = decoded;
+      next();
+    }catch{
+      console.log("ERror?");
+      return res.status(403).send();
+    }
+    
+    
+  }
 }

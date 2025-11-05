@@ -5,11 +5,12 @@ import { User } from "./user";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { UserRepository } from "./userRepository";
-
+import { TokenStore } from "./tokenStore";
+import { AuthRequest } from "./authService";
 
 
 //To allow for dependency injection
-function createApp(userRepo : UserRepository ){
+function createApp(userRepo : UserRepository, tokenRepos : TokenStore){
   //Load Environment Variables
   dotenv.config();
 
@@ -20,7 +21,7 @@ function createApp(userRepo : UserRepository ){
   app.use(express.json());
 
   // Test route
-  app.get("/",authenticateToken, (req , res) => {
+  app.get("/",authenticateToken(tokenRepos), (req , res) => {
     res.send("Task Manager API is running...");
   });
 
@@ -35,13 +36,15 @@ function createApp(userRepo : UserRepository ){
   });
 
   app.post("/login", async (req, res)=>{
+    //Fetch Data from Request Body
     const {username, password} = req.body;
+
     let authenticated =  await authenticateUser(username,password,userRepo);
-    console.log(authenticated);
     if(authenticated){
       try{
         let token = generateAccessToken(username)
-        console.log(token);
+        //Add Refresh Token
+        tokenRepos.addToken(username,new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
         res.json({"token": token});
       }catch(error){
         console.log("some error",error);
@@ -50,14 +53,18 @@ function createApp(userRepo : UserRepository ){
     res.status(401).send();
   })
 
-  app.post("/logout",(req,res)=>{
-    res.cookie('sessionId',"", {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'strict',
-      expires: new Date(0),
-    })
-    res.status(200).end();1
+  app.post("/logout", authenticateToken(tokenRepos) ,(req : AuthRequest,res)=>{
+    if(req.user!=null){
+      //Get User Details From JWT
+      let username = req.user.username;
+      //Invalidate Refresh Token
+      tokenRepos.removeToken(username);
+      res.status(403).end();
+    }else{
+      //Change
+      res.status(200);
+    }
+    
   })
   return app;
 }
