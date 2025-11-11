@@ -1,12 +1,12 @@
 import express, { NextFunction, Request, Response } from "express";
-import { MockUserRepository } from "./mockUserRepository";
-import { authenticateUser, registerUser , generateAccessToken , authenticateToken } from "./authService";
-import { User } from "./user";
+import { MockUserRepository } from "../mockUserRepository";
+import { authenticateUser, registerUser , generateAccessToken , authenticateToken } from "./src/authService";
+import { User } from "./models/user";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { UserRepository } from "./userRepository";
-import { TokenStore } from "./tokenStore";
-import { AuthRequest } from "./authService";
+import { UserRepository } from "./src/userRepository";
+import { TokenStore } from "./src/tokenStore";
+import { AuthRequest } from "./src/authService";
 
 
 //To allow for dependency injection
@@ -68,7 +68,12 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore){
   })
 
   app.post("/createTask",authenticateToken(tokenRepos),(req : AuthRequest, res)=>{
-    //userRepos.create()
+    if(req.user!=null){
+      //Get User Details From JWT
+      let username = req.user.username;
+      createTask(username,"this is a cool task")
+    }
+    //userRepos.create(username,password);
   })
 
 
