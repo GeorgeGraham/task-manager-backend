@@ -66,6 +66,12 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore){
     }
     
   })
+
+  app.post("/createTask",authenticateToken(tokenRepos),(req : AuthRequest, res)=>{
+    //userRepos.create()
+  })
+
+
   return app;
 }
 
