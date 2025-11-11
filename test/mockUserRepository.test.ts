@@ -1,8 +1,8 @@
 
 
 
-import { MockUserRepository } from './mockUserRepository';
-import { User } from './user';
+import { MockUserRepository } from '../mockUserRepository';
+import { User } from '../models/user';
 
 describe('MockUserRepository', () => {
   test('should add a user', async () => {
