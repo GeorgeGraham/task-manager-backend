@@ -1,12 +1,12 @@
 import express, { NextFunction, Request, Response } from "express";
-import { MockUserRepository } from "../mockUserRepository";
-import { authenticateUser, registerUser , generateAccessToken , authenticateToken } from "./src/authService";
+import { MockUserRepository } from "./mockUserRepository";
+import { authenticateUser, registerUser , generateAccessToken , authenticateToken } from "./authService";
 import { User } from "./models/user";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { UserRepository } from "./src/userRepository";
-import { TokenStore } from "./src/tokenStore";
-import { AuthRequest } from "./src/authService";
+import { UserRepository } from "./userRepository";
+import { TokenStore } from "./tokenStore";
+import { AuthRequest } from "./authService";
 
 
 //To allow for dependency injection

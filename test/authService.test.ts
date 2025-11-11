@@ -1,6 +1,6 @@
 import { registerUser , authenticateUser } from "../authService";
 import { MockUserRepository } from "../mockUserRepository";
-import { User } from "../user";
+import { User } from "../src/models/user";
 
 
 describe("registerUser", () => {
