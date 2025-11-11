@@ -1,5 +1,5 @@
 import { UserRepository } from "./userRepository";
-import { User } from "./user";
+import { User } from "./models/user";
 import jwt , { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { TokenStore } from "./tokenStore";

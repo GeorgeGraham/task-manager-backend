@@ -1,5 +1,5 @@
 
-import { User } from "./user";
+import { User } from "./models/user";
 import { UserRepository } from "./userRepository";
 
 export class MockUserRepository implements UserRepository {

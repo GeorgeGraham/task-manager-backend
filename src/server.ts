@@ -1,6 +1,6 @@
 
 
-import createApp from "./index";
+import createApp from "../index";
 import { MockUserRepository } from "./mockUserRepository";
 import { MockTokenStore } from "./tokenStore";
 
