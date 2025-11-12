@@ -7,10 +7,10 @@ import dotenv from 'dotenv';
 import { UserRepository } from "./userRepository";
 import { TokenStore } from "./tokenStore";
 import { AuthRequest } from "./authService";
-
+import { TaskRepository } from "./taskRepository";
 
 //To allow for dependency injection
-function createApp(userRepo : UserRepository, tokenRepos : TokenStore){
+function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepository  : TaskRepository){
   //Load Environment Variables
   dotenv.config();
 
@@ -71,7 +71,7 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore){
     if(req.user!=null){
       //Get User Details From JWT
       let username = req.user.username;
-      createTask(username,"this is a cool task")
+      //createTask(username,"this is a cool task")
     }
     //userRepos.create(username,password);
   })
