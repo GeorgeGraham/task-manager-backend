@@ -1,7 +1,6 @@
 
 
 import request from "supertest";
-import app from "../index";
 import { createTestApp } from "./testutils";
 //Isolating Test Data?
 

@@ -31,9 +31,9 @@ export async function logoutUser(): Promise<void> {
 }
 
 //Generates JWT Token , with username in payload based on environment variable
-export function generateAccessToken(username : string){
+export function generateAccessToken(userId : string){
   if (!process.env.SECRET) throw new Error("SECRET not defined");
-  const token = jwt.sign({"username" : username}, process.env.SECRET, {expiresIn: '1800s'});
+  const token = jwt.sign({"userId" : userId}, process.env.SECRET, {expiresIn: '1800s'});
   return token;
 }
 
@@ -44,11 +44,11 @@ export interface AuthRequest extends Request {
 
 //Interface for JWT
 interface UserPayload extends JwtPayload {
-  username: string;
+  userId: string;
 }
 
-async function validRefreshToken(tokenRepo : TokenStore, username : string) : Promise<boolean|undefined>{
-  const valid = await tokenRepo.getTokenData(username);
+async function validRefreshToken(tokenRepo : TokenStore, userId : string) : Promise<boolean|undefined>{
+  const valid = await tokenRepo.getTokenData(userId);
   return valid?.valid;
 }
 
@@ -62,7 +62,7 @@ export function authenticateToken(tokenRepo : TokenStore){
     console.log("Hello");
     try{
       const decoded = jwt.verify(token, process.env.SECRET as string) as UserPayload;
-      const validRefresh = await validRefreshToken(tokenRepo, decoded.username);
+      const validRefresh = await validRefreshToken(tokenRepo, decoded.userId);
       if(!validRefresh){
         return res.status(403).send();
       }

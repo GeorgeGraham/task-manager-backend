@@ -8,7 +8,7 @@ import { UserRepository } from "./userRepository";
 import { TokenStore } from "./tokenStore";
 import { AuthRequest } from "./authService";
 import { TaskRepository } from "./taskRepository";
-
+import { createTask } from "./taskService";
 //To allow for dependency injection
 function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepository  : TaskRepository){
   //Load Environment Variables
@@ -38,13 +38,13 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
   app.post("/login", async (req, res)=>{
     //Fetch Data from Request Body
     const {username, password} = req.body;
-
+    const user = await userRepo.getUserByUsername(username);
     let authenticated =  await authenticateUser(username,password,userRepo);
-    if(authenticated){
+    if(authenticated && user !=null){
       try{
-        let token = generateAccessToken(username)
+        let token = generateAccessToken(user.id)
         //Add Refresh Token
-        tokenRepos.addToken(username,new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
+        tokenRepos.addToken(user.id,new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
         res.json({"token": token});
       }catch(error){
         console.log("some error",error);
@@ -67,13 +67,18 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
     
   })
 
-  app.post("/createTask",authenticateToken(tokenRepos),(req : AuthRequest, res)=>{
+  app.post("/createTask",authenticateToken(tokenRepos), async (req : AuthRequest, res)=>{
     if(req.user!=null){
       //Get User Details From JWT
-      let username = req.user.username;
-      //createTask(username,"this is a cool task")
+      let userId = req.user.userId
+      try{
+        const createdTask = await createTask("this is a cool task",userId,taskRepository)
+        res.status(201).json(createdTask);
+      }catch (err){
+        res.status(500).json({ error: (err as Error).message });
+      }
     }
-    //userRepos.create(username,password);
+    
   })
 
 
