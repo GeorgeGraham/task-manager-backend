@@ -81,6 +81,13 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
     
   })
 
+  app.get("/getUserTasks",authenticateToken(tokenRepos),async (req : AuthRequest,res)=>{
+    if(req.user!=null){
+      let userId = req.user.userId;
+      const tasks = await taskRepository.getUsersTasks(userId);
+      return tasks;
+    }
+  })
 
   return app;
 }
