@@ -3,6 +3,7 @@ import { User } from "./models/user";
 import jwt , { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { TokenStore } from "./tokenStore";
+import crypto from "crypto";
 
 export async function registerUser(username : string , password : string , repo : UserRepository): Promise<User> {
   //Check if user already exists in mock database
@@ -10,7 +11,9 @@ export async function registerUser(username : string , password : string , repo 
   if(existing){
     throw new Error("User already exists");
   }
-  return await repo.createUser(new User(username , password));
+  const id = crypto.randomUUID();
+  const newUser = new User(id,username,password);
+  return await repo.createUser(newUser);
 }
 
 export async function authenticateUser(username: string, password: string,  repo : UserRepository): Promise<boolean> {
