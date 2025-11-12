@@ -1,10 +1,10 @@
-
+import { User } from "./models/user";
 
 
 //User Repository interface
 export interface UserRepository {
-    getUserByUsername(username: string): Promise<any>;
-    createUser(user: any): Promise<any>;
+    getUserByUsername(username: string): Promise<User | null>;
+    createUser(user: any): Promise<User>;
 }
 
 
