@@ -20,7 +20,7 @@ export class MockTaskRepository implements TaskRepository {
     }
     async getUsersTasks(userId : string): Promise<Array<Task> | null> {
         for(let i =0; i<this.tasks.length;i++){
-            if(userId == this.tasks[i].username){
+            if(userId == this.tasks[i].userId){
                 return this.tasks[i];
             }
         }
