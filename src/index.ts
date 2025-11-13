@@ -85,7 +85,7 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
     if(req.user!=null){
       let userId = req.user.userId;
       const tasks = await taskRepository.getUsersTasks(userId);
-      return tasks;
+      res.status(200).json(tasks);
     }
   })
 
