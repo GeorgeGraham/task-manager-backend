@@ -27,4 +27,13 @@ export class MockTaskRepository implements TaskRepository {
         }
         return tasks;
     }
+    async deleteTaskByID(id : string) : Promise<boolean>{
+        for(let i=0; i<this.tasks.length;i++){
+            if(id == this.tasks[i].id){
+                this.tasks.splice(i,1);
+                return true;
+            }
+        }
+        return false;
+    }
 }

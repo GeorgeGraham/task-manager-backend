@@ -9,6 +9,8 @@ export interface TaskRepository {
     getUsersTasks(id : string) : Promise<Array<Task> | null>;
     //Get Task Via ID
     getTaskByID(id : string) : Promise<Task | null>;
+    //Delete a Task Via ID
+    deleteTaskByID(id : string) : Promise<boolean>;
 }
 
 
