@@ -89,6 +89,20 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
     }
   })
 
+  app.post("/deleteTask",authenticateToken(tokenRepos),async (req: AuthRequest , res)=>{
+    if(req.user!=null){
+      let userId = req.user.userId;
+      const idToDelete = req.body.id;
+      try{
+        let deleted = await taskRepository.deleteTaskByID(idToDelete);
+        res.status(201).send();
+      }catch (err){
+        console.log("Error occured",err);
+      }
+    }
+  })
+
+
   return app;
 }
 
