@@ -3,6 +3,10 @@ import { useState } from 'react'
 function LoginPage() {
   const [count, setCount] = useState(0)
   
+  const handleLogin = () => {
+    console.log("Handling Login Click!");
+  }
+
   return (
     <div className="flex justify-center items-center bg-yellow-500 h-screen w-screen">
 
