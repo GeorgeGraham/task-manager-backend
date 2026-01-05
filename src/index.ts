@@ -1,4 +1,5 @@
 import express, { NextFunction, Request, Response } from "express";
+
 import { MockUserRepository } from "./mockUserRepository";
 import { authenticateUser, registerUser , generateAccessToken , authenticateToken } from "./authService";
 import { User } from "./models/user";
@@ -9,6 +10,8 @@ import { TokenStore } from "./tokenStore";
 import { AuthRequest } from "./authService";
 import { TaskRepository } from "./taskRepository";
 import { createTask } from "./taskService";
+import cors from 'cors';
+
 //To allow for dependency injection
 function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepository  : TaskRepository){
   //Load Environment Variables
@@ -18,6 +21,7 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
   const secret = process.env.SECRET;
 
   const app = express();
+  app.use(cors());
   app.use(express.json());
 
   // Test route
@@ -46,6 +50,7 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
         //Add Refresh Token
         tokenRepos.addToken(user.id,new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
         res.json({"token": token});
+        
       }catch(error){
         console.log("some error",error);
       }
