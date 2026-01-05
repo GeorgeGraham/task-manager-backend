@@ -84,10 +84,11 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
 
   app.post("/createTask",authenticateToken(tokenRepos), async (req : AuthRequest, res)=>{
     if(req.user!=null){
+      const {taskTitle} = req.body;
       //Get User Details From JWT
       let userId = req.user.userId
       try{
-        const createdTask = await createTask("this is a cool task",userId,taskRepository)
+        const createdTask = await createTask(taskTitle,userId,taskRepository)
         res.status(201).json(createdTask);
       }catch (err){
         res.status(500).json({ error: (err as Error).message });
@@ -108,6 +109,8 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
     if(req.user!=null){
       let userId = req.user.userId;
       const idToDelete = req.body.id;
+      console.log("ID To Delete");
+      console.log(idToDelete);
       try{
         let deleted = await taskRepository.deleteTaskByID(idToDelete);
         res.status(201).send();
