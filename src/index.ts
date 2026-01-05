@@ -11,7 +11,7 @@ import { AuthRequest } from "./authService";
 import { TaskRepository } from "./taskRepository";
 import { createTask } from "./taskService";
 import cors from 'cors';
-
+import cookieparser from 'cookie-parser';
 //To allow for dependency injection
 function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepository  : TaskRepository){
   //Load Environment Variables
@@ -21,8 +21,12 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
   const secret = process.env.SECRET;
 
   const app = express();
-  app.use(cors());
+  app.use(cors({
+    origin : 'http://localhost:5173',
+    credentials : true
+  }));
   app.use(express.json());
+  app.use(cookieparser());
 
   // Test route
   app.get("/",authenticateToken(tokenRepos), (req , res) => {
@@ -49,7 +53,13 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
         let token = generateAccessToken(user.id)
         //Add Refresh Token
         tokenRepos.addToken(user.id,new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
-        res.json({"token": token});
+        //send back jwt , as cookie httponly
+        res.cookie('token',token,{
+          httpOnly : true,
+          secure : false,
+          //CSRF , samesite ?
+        })
+        res.send('Logged in Cookie Set!');
         
       }catch(error){
         console.log("some error",error);

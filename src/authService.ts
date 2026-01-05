@@ -55,9 +55,13 @@ async function validRefreshToken(tokenRepo : TokenStore, userId : string) : Prom
 //Middleware to Authenticate JWT token and pass onto route once authenticated
 export function authenticateToken(tokenRepo : TokenStore){
   return async (req : AuthRequest, res : Response, next : NextFunction) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]
     
+    
+    //const authHeader = req.headers['authorization'];
+    //const token = authHeader && authHeader.split(' ')[1]
+    const token = req.cookies.token;
+    console.log("Token");
+    console.log(token);
     if (token == null) return res.sendStatus(401)
     console.log("Hello");
     try{
