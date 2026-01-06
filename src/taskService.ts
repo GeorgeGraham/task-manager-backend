@@ -8,7 +8,7 @@ export async function createTask(title : string,userId : string, repository : Ta
   //Generate a UUID For the task
   const id = randomUUID();
   //Create the Task Object
-  const task = new Task(id,title,userId);
+  const task = new Task(id,title,userId,false);
   //Save using repository
   try{
     const createdTask = await repository.createTask(task);
