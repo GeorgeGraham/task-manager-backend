@@ -12,6 +12,7 @@ import { TaskRepository } from "./taskRepository";
 import { createTask } from "./taskService";
 import cors from 'cors';
 import cookieparser from 'cookie-parser';
+import { Task } from "./models/task";
 //To allow for dependency injection
 function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepository  : TaskRepository){
   //Load Environment Variables
@@ -120,6 +121,23 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
     }
   })
 
+  app.post("/updateTask",authenticateToken(tokenRepos),async (req: AuthRequest , res)=>{
+    console.log("Updating The Task");
+    if(req.user!=null){
+      console.log("User is not null");
+      let updatedTask = req.body.updatedTask;
+      console.log(updatedTask);
+      let task = await taskRepository.getTaskByID(updatedTask.id);
+      let userId = req.user.userId;
+      if(task !=null ){
+        if(task.userId == userId){
+          //User can edit this task as it's their own
+          console.log("Updating Task Now!");
+          taskRepository.updateTaskByID(updatedTask);
+        }
+      }
+    }
+  })
 
   return app;
 }

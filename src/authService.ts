@@ -60,10 +60,9 @@ export function authenticateToken(tokenRepo : TokenStore){
     //const authHeader = req.headers['authorization'];
     //const token = authHeader && authHeader.split(' ')[1]
     const token = req.cookies.token;
-    console.log("Token");
-    console.log(token);
+    
     if (token == null) return res.sendStatus(401)
-    console.log("Hello");
+    
     try{
       const decoded = jwt.verify(token, process.env.SECRET as string) as UserPayload;
       const validRefresh = await validRefreshToken(tokenRepo, decoded.userId);
@@ -73,7 +72,7 @@ export function authenticateToken(tokenRepo : TokenStore){
       req.user = decoded;
       next();
     }catch{
-      console.log("ERror?");
+      
       return res.status(403).send();
     }
     
