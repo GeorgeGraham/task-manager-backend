@@ -11,6 +11,8 @@ export interface TaskRepository {
     getTaskByID(id : string) : Promise<Task | null>;
     //Delete a Task Via ID
     deleteTaskByID(id : string) : Promise<boolean>;
+    //Update Task Via ID
+    updateTaskByID(updatedTask : Task) : Promise<boolean>;
 }
 
 
