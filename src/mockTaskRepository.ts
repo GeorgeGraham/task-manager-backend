@@ -36,4 +36,14 @@ export class MockTaskRepository implements TaskRepository {
         }
         return false;
     }
+
+    async updateTaskByID(updatedTask : Task) : Promise<boolean>{
+        for(let i=0; i<this.tasks.length;i++){
+            if(updatedTask.id == this.tasks[i].id){
+                this.tasks[i] = updatedTask;
+                return true;
+            }
+        }
+        return false;
+    }
 }
