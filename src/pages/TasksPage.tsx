@@ -1,20 +1,32 @@
 import { useState , useEffect } from 'react'
 import Task from '../components/Task'
 import type { TaskInterface } from "../types";
+import axios from 'axios';
 
-var nextId = 3;
 function TasksPage() {
   
   const [tasks,setTasks] = useState<TaskInterface[]>([])
   //Adding Tasks or not
   const [adding, setAdding] = useState(false);
   useEffect(() => {
-    console.log("Component mounted!");
-    //Setup the tasks
-    setTasks([
-      { id: 1, title: "Test task 1", done: false },
-      { id: 2, title: "Test task 2", done: true },
-    ])
+    //Load Tasks from this user
+    axios.get('http://localhost:5000/getUserTasks',{withCredentials : true}).then(
+      function(response){
+        console.log("User Existing Tasks");
+        console.log(response);
+        setTasks([...tasks,...response.data])
+      }
+    ).catch(
+      function(error){
+        
+      }
+    ).finally(
+      function(){
+
+      }
+    )
+
+
   }, []);
 
   //User Adding a Task , Creation UI shown
@@ -23,42 +35,86 @@ function TasksPage() {
   }
 
   //Update Task
-  const updateTask = ()=>{
+  const updateTask = (updatedTask : TaskInterface)=>{
     //Run API to update task
-    console.log("Updating Task through backend to match changes");
+    //const task = tasks.find(task => task.id === id);
+    axios.post('http://localhost:5000/updateTask',{updatedTask : updatedTask},{withCredentials : true}).then(
+      function(response){
+        
+      }
+    ).catch(
+      function(error){
+
+      }
+    ).finally(function(){
+
+    })
   }
 
   //Save Button
   const saveTask = ()=>{
-    //Run API to Add task
-    //Comes back +
 
-    //Mock implementation
-    let task = document.getElementById("taskInput") as HTMLInputElement | null
-    if(task!=null){
-      let taskName = task.value;
-      setTasks([...tasks, { id: nextId, title: taskName, done: false }])
-      nextId+=1;
-    }
+    //Get Task Title from document
+    let title = (document.getElementById("taskInput") as HTMLInputElement).value;
+
+    //Run API to Add task
+    axios.post('http://localhost:5000/createTask',{taskTitle:title},{withCredentials : true})
+    .then(function(response){
+      //handle success
+      console.log(response);
+      //Should return created task ? 
+      setTasks([...tasks, response.data])
+    }).catch(function(error){
+      //handle error
+      console.log(error);
+    }).finally(function(){
+      //always executed
+      console.log("Something?");
+    })
+    console.log("Updating Task through backend to match changes");
+    
   }
 
   //Cancel Button
 
   //Delete Task from Tasks List
-  const deleteTask = (taskId : number) =>{
+  const deleteTask = (task : TaskInterface) =>{
     //Run API to Delete task
-    //Comes back success
-    console.log(taskId);
-    for(var i=0; i<tasks.length;i++){
-      if(tasks[i].id == taskId){
-        let newTasks = [...tasks];
-        newTasks.splice(i,1);
-        setTasks(newTasks);
+    axios.post('http://localhost:5000/deleteTask',{id : task.id},{withCredentials : true})
+    .then(function(response){
+      //Comes back success , Update UI
+      for(var i=0; i<tasks.length;i++){
+        if(tasks[i].id == task.id){
+          let newTasks = [...tasks];
+          newTasks.splice(i,1);
+          setTasks(newTasks);
+        }
       }
-    }
+    }).catch(function(error){
+
+    }).finally(function(){
+
+    })
+
   }
  
-
+  const logout = ()=>{
+    axios.post('http://localhost:5000/logout',{},{withCredentials : true}).then(
+      function(response){
+        console.log("Successful Logout!");
+        console.log(response);
+      }
+    ).catch(
+      function(error){
+        console.log("Logout Failed");
+        console.log(error);
+      }
+    ).finally(
+      function(){
+        
+      }
+    )
+  }
 
   return (
     <div className="">
@@ -66,7 +122,9 @@ function TasksPage() {
         <nav className="bg-red-500 h-14 p-2 flex justify-between">
             <span className="font-bold text-2xl">Task Manager</span>
             {/*Button Styling , to reuse*/}
+            <button onClick={logout}>Logout</button>
         </nav>
+
         <div className="p-2">
           <h1 className="font-bold text-4xl">Tasks To Do</h1>
           
@@ -84,7 +142,7 @@ function TasksPage() {
                 ) : <></> }
             </div>
             {
-              tasks.map(task => <Task update={updateTask} delete={deleteTask} key={task.id} id={task.id} title={task.title} done={task.done} />)
+              tasks.map(task => <Task update={updateTask} delete={deleteTask} key={task.id} task={task} />)
             }
           </div>
         </div>

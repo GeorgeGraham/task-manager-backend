@@ -11,10 +11,11 @@ function LoginPage() {
     let username = usernameInput.value;
     let password = passwordInput.value;
     console.log("POSTING");
-    axios.post('http://localhost:5000/login',{username:username , password:password})
+    axios.post('http://localhost:5000/login',{username:username , password:password},{withCredentials : true})
     .then(function(response){
-      //handle success
-      console.log(response);
+      console.log("Success");
+      console.log(response.data.token);
+      
     }).catch(function(error){
       //handle error
       console.log(error);

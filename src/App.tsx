@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import './App.css'
 import { Route , Routes } from 'react-router'
+import TasksPage from './pages/TasksPage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,6 +14,7 @@ function App() {
     <Routes>
       <Route path="/" element={<LoginPage/>} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/tasks" element={<TasksPage />} />
     </Routes>
   )
 }
