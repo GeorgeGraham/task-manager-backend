@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import axios from 'axios';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 function LoginPage() {
   const [count, setCount] = useState(0)
-  
+  const navigate = useNavigate();
   const handleLogin = () => {
     console.log("Handling Login Click!");
     let usernameInput = document.getElementById("usernameInput") as HTMLInputElement;
@@ -15,7 +15,8 @@ function LoginPage() {
     .then(function(response){
       console.log("Success");
       console.log(response.data.token);
-      
+      navigate('/tasks');
+      console.log("Should Have Navigated ???");
     }).catch(function(error){
       //handle error
       console.log(error);
