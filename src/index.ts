@@ -58,6 +58,7 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
         res.cookie('token',token,{
           httpOnly : true,
           secure : false,
+          maxAge: 1000 * 60 * 30,
           //CSRF , samesite ?
         })
         res.send('Logged in Cookie Set!');
@@ -72,13 +73,14 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
   app.post("/logout", authenticateToken(tokenRepos) ,(req : AuthRequest,res)=>{
     if(req.user!=null){
       //Get User Details From JWT
-      let username = req.user.username;
+      let userId = req.user.userId;
       //Invalidate Refresh Token
-      tokenRepos.removeToken(username);
-      res.status(403).end();
+      tokenRepos.removeToken(userId);
+      console.log("Removing Refresh Token");
+      res.status(200).end();
     }else{
       //Change
-      res.status(200);
+      res.status(401);
     }
     
   })
@@ -139,6 +141,13 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
     }
   })
 
+  app.get("/me",authenticateToken(tokenRepos),async (req: AuthRequest, res)=>{
+    console.log("Running Route");
+    if(req.user!=null){
+      res.send(req.user);
+    }
+  })
+  
   return app;
 }
 
