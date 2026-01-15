@@ -13,6 +13,9 @@ import { createTask } from "./taskService";
 import cors from 'cors';
 import cookieparser from 'cookie-parser';
 import { Task } from "./models/task";
+
+
+
 //To allow for dependency injection
 function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepository  : TaskRepository){
   //Load Environment Variables
@@ -132,7 +135,7 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
       let task = await taskRepository.getTaskByID(updatedTask.id);
       let userId = req.user.userId;
       if(task !=null ){
-        if(task.userId == userId){
+        if(task.author_id == userId){
           //User can edit this task as it's their own
           console.log("Updating Task Now!");
           taskRepository.updateTaskByID(updatedTask);

@@ -2,12 +2,12 @@
 export class Task{
     id : string;
     title : string;
-    userId : string;
-    done : boolean;
-    constructor(id : string, title :string , userId : string, done : boolean){
+    author_id : string;
+    complete : boolean;
+    constructor(id : string, title :string , author_id : string, complete : boolean){
         this.id = id;
         this.title = title;
-        this.userId = userId;
-        this.done = done;
+        this.author_id = author_id;
+        this.complete = complete;
     }
 }
