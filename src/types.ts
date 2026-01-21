@@ -1,5 +1,6 @@
 export interface TaskInterface {
   id: string;
   title: string;
-  done: boolean;
+  complete: boolean;
+  list_order: number;
 }

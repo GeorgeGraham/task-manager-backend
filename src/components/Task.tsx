@@ -8,16 +8,16 @@ interface TaskProps{
 }
 
 function Task(props : TaskProps) {
-    const [done, setDone] = useState(props.task.done);
+    const [done, setDone] = useState(props.task.complete);
     const [editing,setEditing] = useState(false);
-
+    
     const handleDelete = () => props.delete(props.task);
 
     const toggleTaskStatus = ()=>{
         const newDone = !done;
         setDone(newDone);
         console.log(done);
-        props.update({...props.task, done: newDone});
+        props.update({...props.task, complete: newDone});
     }
 
     const handleUpdate = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -30,16 +30,16 @@ function Task(props : TaskProps) {
     }
 
     return (
-        <div className="bg-gray-400 h-20 flex items-center justify-between p-2 rounded-md">
-            <div className="h-full flex items-center">
+        <div className="bg-gray-200 h-20 flex items-center justify-between rounded-md">
+            <div className="h-full flex items-center p-2">
                 <button onClick={toggleTaskStatus} className={`rounded-full h-10 w-10 ${
                     done ? "bg-green-500" : "bg-blue-500"
-                }`}></button>
+                }`}>{done ? "✓" : ""}</button>
                 
                 <input id='taskTitle' onFocus={handleFocus}  onBlur={handleUpdate} defaultValue={props.task.title} className="font-bold text-2xl  hover:cursor-pointer"></input>
             </div>
             <div className="flex flex-col h-full">
-                <button onClick={handleDelete} className="h-full p-2 bg-red-500">x</button>
+                <button onClick={handleDelete} className="h-full p-4 bg-red-300 rounded-r-md font-bold text-2xl">x</button>
             </div>
         </div>
     )
