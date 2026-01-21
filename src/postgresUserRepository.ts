@@ -10,12 +10,12 @@ export class PostgresUserRepository implements UserRepository {
         this.pool = pool
     }
 
-    async getUserByUsername(username: string): Promise<User> {
+    async getUserByUsername(username: string): Promise<User | null> {
 
         let queryResult = await this.pool.query<User>("SELECT * FROM users WHERE username = '" + username + "'");
 
         if(!queryResult.rows[0]){
-            throw new Error('User not found');
+            return null;
         }
         
         return Promise.resolve(queryResult.rows[0]);
