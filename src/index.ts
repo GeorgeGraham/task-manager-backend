@@ -90,11 +90,11 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
 
   app.post("/createTask",authenticateToken(tokenRepos), async (req : AuthRequest, res)=>{
     if(req.user!=null){
-      const {taskTitle} = req.body;
+      const {taskTitle , list_order} = req.body;
       //Get User Details From JWT
       let userId = req.user.userId
       try{
-        const createdTask = await createTask(taskTitle,userId,taskRepository)
+        const createdTask = await createTask(taskTitle,userId,list_order,taskRepository)
         res.status(201).json(createdTask);
       }catch (err){
         res.status(500).json({ error: (err as Error).message });

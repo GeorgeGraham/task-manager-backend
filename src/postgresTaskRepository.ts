@@ -12,13 +12,14 @@ export class PostgresTaskRepository implements TaskRepository {
 
     async createTask(task : Task): Promise<Task>{
         console.log("Running Create Task With Query");
+        console.log(task.list_order);
         let queryResult = await this.pool.query<Task>(
-            `INSERT INTO tasks (id, title, complete, author_id)
-            VALUES ($1, $2, $3, $4)
+            `INSERT INTO tasks (id, title, complete, author_id, list_order)
+            VALUES ($1, $2, $3, $4, $5)
             RETURNING *`,
-            [task.id, task.title, task.complete,task.author_id]
+            [task.id, task.title, task.complete,task.author_id,task.list_order]
         );
-
+        
         if(!queryResult.rows[0]){
             throw new Error('Task Not Inserted');
         }
