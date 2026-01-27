@@ -5,15 +5,17 @@ import { NextFunction, Request, Response } from "express";
 import { TokenStore } from "./tokenStore";
 import crypto from "crypto";
 
+//function , interact with repo and register user
 export async function registerUser(username : string , password : string , repo : UserRepository): Promise<User> {
-  //Check if user already exists in mock database
   const existing = await repo.getUserByUsername(username);
   if(existing){
     throw new Error("User already exists");
+  }else{
+    const id = crypto.randomUUID();
+    const newUser = new User(id,username,password);
+    return await repo.createUser(newUser);
   }
-  const id = crypto.randomUUID();
-  const newUser = new User(id,username,password);
-  return await repo.createUser(newUser);
+
 }
 
 export async function authenticateUser(username: string, password: string,  repo : UserRepository): Promise<boolean> {

@@ -50,27 +50,41 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
   app.post("/login", async (req, res)=>{
     //Fetch Data from Request Body
     const {username, password} = req.body;
-    const user = await userRepo.getUserByUsername(username);
-    let authenticated =  await authenticateUser(username,password,userRepo);
-    if(authenticated && user !=null){
-      try{
-        let token = generateAccessToken(user.id)
-        //Add Refresh Token
-        tokenRepos.addToken(user.id,new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
-        //send back jwt , as cookie httponly
-        res.cookie('token',token,{
-          httpOnly : true,
-          secure : false,
-          maxAge: 1000 * 60 * 30,
-          //CSRF , samesite ?
-        })
-        res.send('Logged in Cookie Set!');
-        
-      }catch(error){
-        console.log("some error",error);
+
+    try{
+
+      const user = await userRepo.getUserByUsername(username);
+      let authenticated =  await authenticateUser(username,password,userRepo);
+
+      if(authenticated && user !=null){
+
+          //Generate JWT Token
+          let token = generateAccessToken(user.id)
+
+          //Add Refresh Token
+          tokenRepos.addToken(user.id,new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
+
+          //send back jwt , as cookie httponly
+          res.cookie('token',token,{
+            httpOnly : true,
+            secure : false,
+            maxAge: 1000 * 60 * 30,
+            //CSRF , samesite ?
+          })
+
+          //Logged In Successfully
+          res.send('Logged in Success');
       }
+
+      res.status(401).send();
+
+    }catch(error : unknown){
+
+      if(error instanceof Error){
+        res.status(500).json({ error: error.message });
+      }
+      
     }
-    res.status(401).send();
   })
 
   app.post("/logout", authenticateToken(tokenRepos) ,(req : AuthRequest,res)=>{
