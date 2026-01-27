@@ -1,10 +1,10 @@
 import { MockUserRepository } from "../src/mockUserRepository";
-import { MockTokenStore } from "../src/tokenStore";
+import { MockTokenStore } from "../src/mockTokenStore";
 import createApp from "../src/index";
 import { MockTaskRepository } from "../src/mockTaskRepository";
 import request from "supertest";
 import { Express } from "express";
-
+import { User } from "../src/models/user";
 export function createTestApp(){
     const userRepo  = new MockUserRepository();
     const tokenRepo = new MockTokenStore();
@@ -14,7 +14,12 @@ export function createTestApp(){
 }
 
 
-export async function createUser(app : Express,username : string, password : string) : Promise<string>{
+export function createUser() : User{
+    //Register a new user in the app with username and password
+    return new User("1","Bob","123");
+}
+
+export async function createUserWithApp(app : Express,username : string, password : string) : Promise<string>{
     //Register a new user in the app with username and password
     await request(app).post("/register").send({ username: username, password: password });   
     //Login
@@ -23,3 +28,4 @@ export async function createUser(app : Express,username : string, password : str
     const token = loginRes.body.token;
     return token;
 }
+
