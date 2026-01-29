@@ -6,7 +6,9 @@
   "scripts": {
     "test": "jest",
     "start": "node ./src/server.ts",
-    "dev": "nodemon ./src/server.ts"
+    "backend": "nodemon ./src/server.ts",
+    "frontend":"cd frontend && npm run dev",
+    "dev" : "concurrently \"npm run backend\" \"npm run frontend\""
   },
   "author": "",
   "license": "ISC",

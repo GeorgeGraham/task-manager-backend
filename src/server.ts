@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 
 const tokenRepository = new MockTokenStore();
 
-const pool = new Pool({
+/*const pool = new Pool({
     user: 'postgres',
     password: '123',
     host: 'localhost',
@@ -19,5 +19,8 @@ const pool = new Pool({
 })
 const userRepository = new PostgresUserRepository(pool);
 const taskRepository = new PostgresTaskRepository(pool);
+*/
+const userRepository = new MockUserRepository();
+const taskRepository = new MockTaskRepository();
 const app = createApp(userRepository,tokenRepository,taskRepository)
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
