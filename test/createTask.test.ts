@@ -1,4 +1,4 @@
-import { createTestApp , createUser } from "./testutils";
+import { createTestApp , TestUserSession } from "./testutils";
 import request from "supertest";
 
 
@@ -10,11 +10,10 @@ describe("POST /createTask", ()=>{
   });
   it("create task should be successful", async () => {
     const app = createTestApp();
-    const token = await createUser(app,"Bob","password");
-    console.log(token);
-    const res = await request(app).post("/createTask").set('Authorization', `Bearer ${token}`);
+    const userSession = new TestUserSession(app,"Bob","123");
+    await userSession.Login();
+    const res = await userSession.formPost("/createTask").send({taskTitle: "this is a cool task", list_order : 1})
     expect(res.status).toBe(201);
     expect(res.body.title).toBe("this is a cool task");
-    //Userid same ?
   });
 })

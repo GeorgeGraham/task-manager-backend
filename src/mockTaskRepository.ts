@@ -21,7 +21,7 @@ export class MockTaskRepository implements TaskRepository {
     async getUsersTasks(userId : string): Promise<Array<Task> | null> {
         const tasks = [];
         for(let i =0; i<this.tasks.length;i++){
-            if(userId == this.tasks[i].userId){
+            if(userId == this.tasks[i].author_id){
                 tasks.push(this.tasks[i]);
             }
         }

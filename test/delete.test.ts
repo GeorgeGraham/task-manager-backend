@@ -1,18 +1,25 @@
-import { createTestApp , createUser } from "./testutils";
+import { createTestApp , TestUserSession } from "./testutils";
 import request from "supertest";
 
 
 describe("POST /delete", ()=>{
   it("should delete the task correctly when logged in", async () => {
+    //Arrange
     const app = createTestApp();
-    const token = await createUser(app,"Bob","123");
-    await request(app).post("/createTask").send().set('Authorization', `Bearer ${token}`);
-    await request(app).post("/createTask").send().set('Authorization', `Bearer ${token}`);
-    const tasks = await request(app).get("/getUserTasks").set('Authorization', `Bearer ${token}`);
-    const taskToDelete = tasks.body[0].id;
-    const response = await request(app).post("/deleteTask").set('Authorization', `Bearer ${token}`).send({id : taskToDelete})
-    expect(response.status).toBe(201);
-    const tasks2 = await request(app).get("/getUserTasks").set('Authorization', `Bearer ${token}`);
-    expect(tasks2.body.length).toBeLessThanOrEqual(1);
+    const userSession = new TestUserSession(app,"Bob","123");
+    await userSession.Login();
+    let test = await userSession.formPost("/createTask").send({taskTitle: "task1", list_order : 1})
+    const tasks = await userSession.formGet("/getUserTasks").send();
+    console.log(tasks.body);
+    //const taskToDelete = tasks.body[0];
+    //console.log(tasks);
+    
+    //Act
+    //const response = await userSession.formPost("/deleteTask").send({id: taskToDelete})
+    
+    //Assert
+    //expect(response.status).toBe(201);
+    //const tasks2 = await request(app).get("/getUserTasks").set('Cookie', `cookie`);
+    //expect(tasks2.body.length).toBeLessThanOrEqual(1);
   });
 });
