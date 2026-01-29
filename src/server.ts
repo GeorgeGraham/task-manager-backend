@@ -3,7 +3,7 @@ import { Pool } from "pg";
 import createApp from "./index";
 import { MockTaskRepository } from "./mockTaskRepository";
 import { MockUserRepository } from "./mockUserRepository";
-import { MockTokenStore } from "./tokenStore";
+import { MockTokenStore } from "./mockTokenStore";
 import { PostgresTaskRepository } from "./postgresTaskRepository";
 import { PostgresUserRepository } from "./postgresUserRepository";
 const PORT = process.env.PORT || 5000;
