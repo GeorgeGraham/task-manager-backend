@@ -21,14 +21,15 @@ function createApp(userRepo : UserRepository, tokenRepos : TokenStore , taskRepo
   //Load Environment Variables
   dotenv.config();
 
-  //Secret for JWT
-  const secret = process.env.SECRET;
+  //Secret for JWT , (dev default for easy local running)
+  const secret = process.env.SECRET || "dev-secret-change-me";
 
   const app = express();
   app.use(cors({
     origin : 'http://localhost:5173',
     credentials : true
   }));
+
   app.use(express.json());
   app.use(cookieparser());
 

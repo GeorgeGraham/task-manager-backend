@@ -34,8 +34,9 @@ export async function logoutUser(): Promise<void> {
 
 //Generates JWT Token , with username in payload based on environment variable
 export function generateAccessToken(userId : string){
-  if (!process.env.SECRET) throw new Error("SECRET not defined");
-  const token = jwt.sign({"userId" : userId}, process.env.SECRET, {expiresIn: '1800s'});
+  //if (!process.env.SECRET) throw new Error("SECRET not defined");
+  //process.env.SECRET 
+  const token = jwt.sign({"userId" : userId}, "dev-secret-change-me", {expiresIn: '1800s'});
   return token;
 }
 
@@ -58,15 +59,14 @@ async function validRefreshToken(tokenRepo : TokenStore, userId : string) : Prom
 export function authenticateToken(tokenRepo : TokenStore){
   return async (req : AuthRequest, res : Response, next : NextFunction) => {
     
-    
     //const authHeader = req.headers['authorization'];
     //const token = authHeader && authHeader.split(' ')[1]
     const token = req.cookies.token;
     
     if (token == null) return res.sendStatus(401)
-    
+    //process.env.SECRET
     try{
-      const decoded = jwt.verify(token, process.env.SECRET as string) as UserPayload;
+      const decoded = jwt.verify(token, "dev-secret-change-me" as string) as UserPayload;
       const validRefresh = await validRefreshToken(tokenRepo, decoded.userId);
       if(!validRefresh){
         return res.status(403).send();
