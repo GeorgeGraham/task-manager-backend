@@ -5,6 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "test": "jest",
+    "postinstall" : "cd frontend && npm install",
     "start": "node ./src/server.ts",
     "backend": "nodemon ./src/server.ts",
     "frontend":"cd frontend && npm run dev",
